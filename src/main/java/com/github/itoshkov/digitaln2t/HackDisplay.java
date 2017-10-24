@@ -23,7 +23,6 @@ import static de.neemann.digital.core.element.PinInfo.input;
 public class HackDisplay extends Node implements Element, RAMInterface {
     private static final int WIDTH = 512;
     private static final int HEIGHT = 256;
-    private static final int SCALE_FACTOR = 3;
 
     /**
      * The RAMs {@link ElementTypeDescription}
@@ -36,7 +35,8 @@ public class HackDisplay extends Node implements Element, RAMInterface {
                                        input("C"),
                                        input("ld"))
                     .addAttribute(Keys.ROTATE)
-                    .addAttribute(Keys.LABEL);
+                    .addAttribute(Keys.LABEL)
+                    .addAttribute(Keys.SIZE);
 
     private final DataField memory;
     private final ObservableValue output;
@@ -44,6 +44,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
     private final int bits;
     private final String label;
     private final int size;
+    private final int scaleFactor;
     private ObservableValue addrIn;
     private ObservableValue dataIn;
     private ObservableValue strIn;
@@ -62,6 +63,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
      */
     public HackDisplay(ElementAttributes attr) {
         super(true);
+        scaleFactor = attr.get(Keys.SIZE);
         bits = 16;
         output = createOutput();
         addrBits = 13;
@@ -172,16 +174,11 @@ public class HackDisplay extends Node implements Element, RAMInterface {
     }
 
     private void updateImage(int addr, long data) {
-//        System.out.printf("addr = %x%n", addr);
-//        System.out.printf("data = %x%n", data);
         final byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
         final int idx = addr * 2;
         final long inv = ~Long.reverse(data);
         pixels[idx] = (byte) (inv >>> 56);
         pixels[idx + 1] = (byte) (inv >>> 48);
-//        System.out.printf("inv = %x%n", inv);
-//        System.out.printf("byte0 = %x%n", pixels[idx]);
-//        System.out.printf("byte1 = %x%n", pixels[idx + 1]);
     }
 
     @Override
@@ -221,7 +218,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
     private void updateGraphic() {
         SwingUtilities.invokeLater(() -> {
             if (graphicDialog == null || !graphicDialog.isVisible()) {
-                graphicDialog = new HackGraphicsDialog(image, SCALE_FACTOR);
+                graphicDialog = new HackGraphicsDialog(image, scaleFactor);
                 getModel().getWindowPosManager().register("HackDisplay_" + label, graphicDialog);
             }
             graphicDialog.updateGraphic();

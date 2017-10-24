@@ -9,7 +9,7 @@ import de.neemann.digital.gui.Main;
 public class Nand2TetrisComponentSource implements ComponentSource {
     @Override
     public void registerComponents(ComponentManager componentManager) throws InvalidNodeException {
-        componentManager.addComponent("nand2tetris/HACK Display", HackDisplay.DESCRIPTION);
+        componentManager.addComponent("nand2tetris", HackDisplay.DESCRIPTION);
     }
 
     /**
