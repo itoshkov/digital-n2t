@@ -8,6 +8,7 @@ import de.neemann.digital.core.ObservableValues;
 import de.neemann.digital.core.element.Element;
 import de.neemann.digital.core.element.ElementAttributes;
 import de.neemann.digital.core.element.ElementTypeDescription;
+import de.neemann.digital.core.element.Key;
 import de.neemann.digital.core.element.Keys;
 import de.neemann.digital.core.memory.DataField;
 import de.neemann.digital.core.memory.RAMInterface;
@@ -21,6 +22,10 @@ import static de.neemann.digital.core.element.PinInfo.input;
 
 @SuppressWarnings("WeakerAccess")
 public class HackDisplay extends Node implements Element, RAMInterface {
+    public static final Key<Integer> SCALE_FACTOR = new Key.KeyInteger("Scale factor", 2)
+            .setComboBoxValues(new Integer[]{1, 2, 3, 4})
+            .setMin(1)
+            .setMax(4);
     private static final int WIDTH = 512;
     private static final int HEIGHT = 256;
 
@@ -36,7 +41,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
                                        input("ld"))
                     .addAttribute(Keys.ROTATE)
                     .addAttribute(Keys.LABEL)
-                    .addAttribute(Keys.SIZE);
+                    .addAttribute(SCALE_FACTOR);
 
     private final DataField memory;
     private final ObservableValue output;
@@ -63,7 +68,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
      */
     public HackDisplay(ElementAttributes attr) {
         super(true);
-        scaleFactor = attr.get(Keys.SIZE);
+        scaleFactor = attr.get(SCALE_FACTOR);
         bits = 16;
         output = createOutput();
         addrBits = 13;
