@@ -1,4 +1,4 @@
-# NAND2Te #
+# NAND2Tetris #
 
 [Digital](https://github.com/hneemann/Digital/) component for implementing a
 HACK-like computer as described in the [From NAND to Tetris](http://nand2tetris.org) course.

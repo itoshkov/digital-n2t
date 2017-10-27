@@ -58,7 +58,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
     private int addr;
     private boolean lastClk = false;
     private boolean ld;
-    private HackGraphicsDialog graphicDialog;
+    private HackGraphicsDialog graphicsDialog;
     private final BufferedImage image;
 
     /**
@@ -222,11 +222,11 @@ public class HackDisplay extends Node implements Element, RAMInterface {
 
     private void updateGraphic() {
         SwingUtilities.invokeLater(() -> {
-            if (graphicDialog == null || !graphicDialog.isVisible()) {
-                graphicDialog = new HackGraphicsDialog(image, scaleFactor);
-                getModel().getWindowPosManager().register("HackDisplay_" + label, graphicDialog);
+            if (graphicsDialog == null || !graphicsDialog.isVisible()) {
+                graphicsDialog = new HackGraphicsDialog(image, scaleFactor);
+                getModel().getWindowPosManager().register("HackDisplay_" + label, graphicsDialog);
             }
-            graphicDialog.updateGraphic();
+            graphicsDialog.updateGraphic();
         });
     }
 }
