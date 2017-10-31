@@ -22,7 +22,12 @@ import static de.neemann.digital.core.element.PinInfo.input;
 
 @SuppressWarnings("WeakerAccess")
 public class HackDisplay extends Node implements Element, RAMInterface {
-    public static final Key<Integer> SCALE_FACTOR = new Key.KeyInteger("Scale factor", 2)
+    public static final Key<Integer> SCALE_FACTOR = new Key.KeyInteger("Scale factor", 2) {
+        @Override
+        public String getName() {
+            return "Scale Factor";
+        }
+    }
             .setComboBoxValues(new Integer[]{1, 2, 3, 4})
             .setMin(1)
             .setMax(4);
@@ -34,11 +39,11 @@ public class HackDisplay extends Node implements Element, RAMInterface {
      */
     public static final ElementTypeDescription DESCRIPTION =
             new ElementTypeDescription(HackDisplay.class,
-                                       input("A"),
-                                       input("D_in"),
-                                       input("str"),
-                                       input("C"),
-                                       input("ld"))
+                    input("A", "address input"),
+                    input("D_in", "data input"),
+                    input("str", "If set, the data is stored."),
+                    input("C", "clock input"),
+                    input("ld", "If set, the stored data is output."))
                     .addAttribute(Keys.ROTATE)
                     .addAttribute(Keys.LABEL)
                     .addAttribute(SCALE_FACTOR);
@@ -87,7 +92,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
      * @return the output value
      */
     protected ObservableValue createOutput() {
-        return new ObservableValue("D", bits, true).setPinDescription(DESCRIPTION);
+        return new ObservableValue("D", bits, true).setDescription("data output pin");
     }
 
     @Override
