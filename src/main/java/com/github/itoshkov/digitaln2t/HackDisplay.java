@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static de.neemann.digital.core.element.PinInfo.input;
 
@@ -225,13 +226,18 @@ public class HackDisplay extends Node implements Element, RAMInterface {
         return addrBits;
     }
 
+    private final AtomicBoolean paintPending = new AtomicBoolean();
+
     private void updateGraphic() {
-        SwingUtilities.invokeLater(() -> {
-            if (graphicsDialog == null || !graphicsDialog.isVisible()) {
-                graphicsDialog = new HackGraphicsDialog(image, scaleFactor);
-                getModel().getWindowPosManager().register("HackDisplay_" + label, graphicsDialog);
-            }
-            graphicsDialog.updateGraphic();
-        });
+        if (paintPending.compareAndSet(false, true)) {
+            SwingUtilities.invokeLater(() -> {
+                if (graphicsDialog == null || !graphicsDialog.isVisible()) {
+                    graphicsDialog = new HackGraphicsDialog(image, scaleFactor);
+                    getModel().getWindowPosManager().register("HackDisplay_" + label, graphicsDialog);
+                }
+                paintPending.set(false);
+                graphicsDialog.updateGraphic();
+            });
+        }
     }
 }
