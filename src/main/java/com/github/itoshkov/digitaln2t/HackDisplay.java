@@ -225,13 +225,19 @@ public class HackDisplay extends Node implements Element, RAMInterface {
         return addrBits;
     }
 
+    private long lastUpdate = 0;
+
     private void updateGraphic() {
-        SwingUtilities.invokeLater(() -> {
-            if (graphicsDialog == null || !graphicsDialog.isVisible()) {
-                graphicsDialog = new HackGraphicsDialog(image, scaleFactor);
-                getModel().getWindowPosManager().register("HackDisplay_" + label, graphicsDialog);
-            }
-            graphicsDialog.updateGraphic();
-        });
+        long time = System.currentTimeMillis();
+        if (time - lastUpdate > 10) {  // not more than 100 repaints per second
+            SwingUtilities.invokeLater(() -> {
+                if (graphicsDialog == null || !graphicsDialog.isVisible()) {
+                    graphicsDialog = new HackGraphicsDialog(image, scaleFactor);
+                    getModel().getWindowPosManager().register("HackDisplay_" + label, graphicsDialog);
+                }
+                graphicsDialog.updateGraphic();
+            });
+            lastUpdate = time;
+        }
     }
 }
