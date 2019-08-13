@@ -29,7 +29,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
             return "Scale Factor";
         }
     }
-            .setComboBoxValues(new Integer[]{1, 2, 3, 4})
+            .setComboBoxValues(1, 2, 3, 4)
             .setMin(1)
             .setMax(4);
     private static final int WIDTH = 512;
@@ -80,7 +80,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
         addrBits = 13;
         size = 1 << addrBits;
         memory = new DataField(size);
-        label = attr.getCleanLabel();
+        label = attr.getLabel();
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_BYTE_BINARY);
         final Graphics g = image.getGraphics();
         g.setColor(Color.WHITE);
@@ -93,7 +93,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
      * @return the output value
      */
     protected ObservableValue createOutput() {
-        return new ObservableValue("D", bits, true).setDescription("data output pin");
+        return new ObservableValue("D", bits).setDescription("data output pin");
     }
 
     @Override
@@ -161,7 +161,7 @@ public class HackDisplay extends Node implements Element, RAMInterface {
     }
 
     @Override
-    public void readInputs() throws NodeException {
+    public void readInputs() {
         long data = 0;
         boolean clk = clkIn.getBool();
         boolean str;
@@ -193,11 +193,11 @@ public class HackDisplay extends Node implements Element, RAMInterface {
     }
 
     @Override
-    public void writeOutputs() throws NodeException {
+    public void writeOutputs() {
         if (ld) {
-            output.set(memory.getDataWord(addr), false);
+            output.set(memory.getDataWord(addr), 0);
         } else {
-            output.set(0, true);
+            output.set(0, -1);
         }
     }
 
@@ -224,6 +224,16 @@ public class HackDisplay extends Node implements Element, RAMInterface {
     @Override
     public int getAddrBits() {
         return addrBits;
+    }
+
+    @Override
+    public boolean isProgramMemory() {
+        return false;
+    }
+
+    @Override
+    public void setProgramMemory(DataField dataField) {
+        memory.setDataFrom(dataField);
     }
 
     private final AtomicBoolean paintPending = new AtomicBoolean();
